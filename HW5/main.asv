@@ -1,0 +1,69 @@
+close all; clear; clc;
+
+k = 3;     
+numP = 1500; 
+xMax=1500;
+yMax=1500;
+
+density = 50;
+
+data_centr = [0,0;10,30;-20,40];
+
+
+data_one = mvnrnd(data_centr(1,), eye(2) * density, 500);
+data_two = mvnrnd(data_centr(2), eye(2) * density, 500);
+data_three = mvnrnd(data_centr(3), eye(2) * density, 500);
+data = [data_one;data_two;data_three];
+
+[cluster, centr] = m_kmeans(k, data'); 
+
+[cluster_mT, centr_m] = spec_kmeans(k, data); 
+cluster_m = cluster_mT';
+
+
+% visualize the clustering
+hold on;
+scatter(data(:,1), data(:,2), 600,cluster,'.');
+% scatter(centr(1,:),centr(2,:),'xk','LineWidth',1.5);
+title('clusters after k-mean, k=5');
+saveas(gcf, 'kmeans_cluster.png');
+
+% % visualize the clustering
+scatter(data(:,1), data(:,2), 600,cluster_m,'.');
+% scatter(centr_m(1,:),centr_m(2,:),'xk','LineWidth',1.5);
+hold on;
+title('Spectral clusters after k-mean, k=5');
+saveas(gcf, 'spec_kmeans_cluster.png');
+
+
+% number of points in each cluster
+% subplot(2,2,2);
+% histogram(cluster);
+% axis tight;
+% [num,~] = histcounts(cluster);
+% yticks(round(linspace(0,max(num),k)));
+% xlabel('Clusters');
+% ylabel('Number of data points');
+% title('Histogram of the cluster points (own implementation)');
+% 
+% % visualize MATLAB's clustering
+% subplot(2,2,3);
+% scatter(xP,yP,200,cluster_m,'.');
+% hold on;
+% scatter(centr_m(:,1),centr_m(:,2),'xk','LineWidth',1.5);
+% axis([0 xMax 0 yMax]);
+% daspect([1 1 1]);
+% xlabel('x');
+% ylabel('y');
+% title('Random data points clustered (MATLABs implementation)');
+% grid on;
+% 
+% % number of points in each MATLAB cluster
+% subplot(2,2,4);
+% histogram(cluster_m);
+% axis tight;
+% [num_m,~] = histcounts(cluster_m);
+% yticks(round(linspace(0,max(num_m),k)));
+% xlabel('Clusters');
+% ylabel('Number of data points');
+% title('Histogram of the cluster points (MATLABs implementation)');
